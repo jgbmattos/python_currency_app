@@ -1,0 +1,93 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: currency-transaction-db
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: '@1234'
+      MYSQL_DATABASE: 'currency_manager'
+    networks:
+      - currency_transaction_network
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    ports:
+      - 9200:9200
+    networks:
+      - currency_transaction_network
+
+  apm:
+    container_name: currency-transaction-apm
+    image: docker.elastic.co/apm/apm-server:6.6.0
+    ports:
+      - 8200:8200
+    links:
+      - elasticsearch
+      - kibana
+    depends_on:
+      - kibana
+    networks:
+      - currency_transaction_network
+
+  kibana:
+    container_name: currency-transaction-kibana
+    image: docker.elastic.co/kibana/kibana:6.6.0
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - currency_transaction_network
+
+  redis:
+    container_name: currency-transaction-redis
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    networks:
+      - currency_transaction_network
+
+  backend:
+    container_name: backend
+    build: ./backend
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    links:
+      - redis
+      - db
+      - apm
+    depends_on:
+      - db
+      - redis
+      - apm
+    networks:
+      - currency_transaction_network
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    stdin_open: true
+    tty: true
+    ports:
+      - 3000:3000
+    links:
+      - backend
+    depends_on:
+      - backend
+    networks:
+      - currency_transaction_network
+
+
+networks:
+  currency_transaction_network:
+    driver: bridge

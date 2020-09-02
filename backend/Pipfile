@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pytest = "*"
+
+[packages]
+elastic-apm = "*"
+Flask = "*"
+Flask-RESTful = "*"
+Flask-SQLAlchemy = "*"
+Flask-Cors  = "*"
+gevent = "*"
+gunicorn = "*"
+pymysql = "*"
+python-decouple = "*"
+schematics = "*"
+SQLAlchemy = "*"
+alembic = "*"
+requests = "*"
+redis = "*"
+blinker = "*"
+simplejson = "*"
+
+[requires]
+python_version = "3.7"

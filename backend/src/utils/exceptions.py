@@ -1,0 +1,4 @@
+
+
+class InvalidCurrencyInput(Exception):
+    pass
