@@ -1,6 +1,12 @@
 echo -ne "Waiting for database to boot up...\n"
 echo -ne "-----------------------------------\n\n"
-sleep 60
+until nc -z -v -w30 db 3306
+do
+  echo "MYSQL not running yet"
+  sleep 5
+done
+
+sleep 20
 
 echo -ne "Upgrading database...\n"
 echo -ne "-----------------------------------\n\n"

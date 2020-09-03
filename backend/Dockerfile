@@ -9,6 +9,7 @@ RUN apt-get update && \
     tzdata \
     gcc \
     g++ \
+    netcat \
     ca-certificates \
     wget && \
     update-ca-certificates \
